@@ -11,21 +11,48 @@
 const rule = require("../../../lib/rules/fsd-path-checker"),
   RuleTester = require("eslint").RuleTester;
 
-
 //------------------------------------------------------------------------------
 // Tests
 //------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester();
+const ruleTester = new RuleTester({
+  parserOptions: {
+    ecmaVersion: 6,
+    sourceType: "module",
+  },
+});
+
 ruleTester.run("fsd-path-checker", rule, {
   valid: [
-    // give me some code that won't trigger a warning
+    {
+      filename:
+        "C:\\k.arakantsev\\projects\\production-project\\src\\features\\AddComment\\ui\\AddCommentForm\\AddCommentForm.tsx",
+      code: "import { getAddCommentFormText } from '../../model/selectors/addCommentSelectors';",
+      errors: [],
+    },
   ],
 
   invalid: [
     {
-      code: "",
-      errors: [{ message: "Fill me in.", type: "Me too" }],
+      filename:
+        "C:\\k.arakantsev\\projects\\production-project\\src\\features\\AddComment\\ui\\AddCommentForm\\AddCommentForm.tsx",
+      code: "import { getAddCommentFormText } from 'features/AddComment/model/selectors/addCommentSelectors';",
+      errors: [
+        {
+          message: "В рамках одного слайса все пути должны быть относительными",
+        },
+      ],
+    },
+    {
+      filename:
+        "C:\\k.arakantsev\\projects\\production-project\\src\\features\\AddComment\\ui\\AddCommentForm\\AddCommentForm.tsx",
+      code: "import { getAddCommentFormText } from '@/features/AddComment/model/selectors/addCommentSelectors';",
+      errors: [
+        {
+          message: "В рамках одного слайса все пути должны быть относительными",
+        },
+      ],
+      options: [{ alias: "@" }],
     },
   ],
 });
